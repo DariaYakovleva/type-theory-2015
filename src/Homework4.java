@@ -16,8 +16,8 @@ public class Homework4 {
 
     public static void main(String[] args) throws FileNotFoundException {
 //        System.setIn(new FileInputStream("tests/HW4/oneminute.in")); //too long
-//        System.setIn(new FileInputStream("tests/HW4/fibslow2.in"));
-        System.setIn(new FileInputStream("tests/HW4/test3.in"));
+        System.setIn(new FileInputStream("tests/HW4/fibslow2.in"));
+//        System.setIn(new FileInputStream("tests/HW4/test10.in"));
         //1 3
         System.setOut(new PrintStream("tests/HW4/test.out"));
         Scanner in = new Scanner(System.in);

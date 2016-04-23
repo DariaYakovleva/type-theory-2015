@@ -28,7 +28,7 @@ public class Homework3 {
 			System.out.println("Ќет свободы дл€ подстановки переменной " + pp.get(1).printExp());
 			System.err.println("Ќет свободы дл€ подстановки переменной " + pp.get(1).printExp());
 		} else {
-			Expression res = pp.get(0).substitution(new ArrayList<String>(), pp.get(1), pp.get(2));
+			Expression res = pp.get(0).substitution(new ArrayList<Long>(), pp.get(1), pp.get(2));
 			System.out.println(res.printExp());
 			System.err.println(res.printExp());
 		}

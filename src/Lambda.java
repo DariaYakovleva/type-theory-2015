@@ -11,14 +11,17 @@ public class Lambda extends LambdaTerm {
     public Lambda(Expression e1, Expression e2) {
     	this.e1 = e1;
     	this.e2 = e2;
+		init();
+		//		System.err.println("lam id = " + id + " " + printExp());
+	}
+
+	void init() {
 		len = e1.getLen() + e2.getLen() + 4;
 		id = (id + getHash("(\\") + e1.getId() * power(2)) % MOD;
 		id = (id + getHash(".") * power((int)e1.getLen() + 2)) % MOD;
 		id = (id + e2.getId() * power((int)e1.getLen() + 3)) % MOD;
 		id = (id + getHash(")") * power((int)(e1.getLen() + e2.getLen()) + 3)) % MOD;
-//		System.err.println("lam id = " + id + " " + printExp());
 	}
-    
     public String printExp() {
 		return "(\\" + e1.printExp() + "." + e2.printExp() + ")";
 	} 
@@ -33,16 +36,17 @@ public class Lambda extends LambdaTerm {
 	public String printExp2() {
 		return printExp();
 	}
-    public Expression substitution(List<String> booked, Expression var, Expression sub) {
-    	List<String> cur = new ArrayList<String>(booked);
-    	cur.add(e1.printExp());
+    public Expression substitution(List<Long> booked, Expression var, Expression sub) {
+    	List<Long> cur = new ArrayList<Long>(booked);
+    	cur.add(e1.getId());
     	return new Lambda(e1.createCopy(), e2.substitution(cur, var, sub));
     }
 
-	public Expression substitution2(List<String> booked, Expression var, Expression sub) {
-		List<String> cur = new ArrayList<String>(booked);
-		cur.add(e1.printExp());
-		e2 = e2.substitution2(booked, var, sub);
+	public Expression substitution2(List<Long> booked, Expression var, Expression sub) {
+		List<Long> cur = new ArrayList<Long>(booked);
+		cur.add(e1.getId());
+		e2 = e2.substitution2(cur, var, sub);
+		init();
 		return this;
 	}
 
@@ -85,7 +89,7 @@ public class Lambda extends LambdaTerm {
 	}
 
 	public Expression getNormalForm(Map<Long, Expression> headNormals) {
-//		System.err.println("lambda norm");
+		System.err.println("lambda norm");
 //		String printStr = this.printExp();
 		Expression a = e1;
 		Expression b = e2;

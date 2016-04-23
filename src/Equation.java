@@ -26,11 +26,11 @@ public class Equation implements Expression {
         return res;
     }
 
-    public Expression substitution(List<String> booked, Expression var, Expression sub) {
+    public Expression substitution(List<Long> booked, Expression var, Expression sub) {
         return new Equation(e1.substitution(booked, var, sub), e2.substitution(booked, var, sub));
     }
 
-    public Expression substitution2(List<String> booked, Expression var, Expression sub) {
+    public Expression substitution2(List<Long> booked, Expression var, Expression sub) {
         e1 = e1.substitution2(booked, var, sub);
         e2 = e2.substitution2(booked, var, sub);
         return this;

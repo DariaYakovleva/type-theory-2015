@@ -10,14 +10,17 @@ public class Application extends LambdaTerm {
 	public Application(Expression e1, Expression e2) {
 		this.e1 = e1;
 		this.e2 = e2;
+		init();
+//		System.err.println("app id = " + id + " " + printExp());
+	}
+
+	void init() {
 		len = e1.getLen() + e2.getLen() + 3;
 		id = (id + getHash("(") + e1.getId() * power(1)) % MOD;
 		id = (id + getHash(" ") * power((int)e1.getLen() + 1)) % MOD;
 		id = (id + e2.getId() * power((int)e1.getLen() + 2)) % MOD;
 		id = (id + getHash(")") * power((int)(e1.getLen() + e2.getLen()) + 2)) % MOD;
-//		System.err.println("app id = " + id + " " + printExp());
 	}
-
 	public String printExp() {
 		return "(" + e1.printExp() + " " + e2.printExp() + ")";
 	}
@@ -29,13 +32,14 @@ public class Application extends LambdaTerm {
 	public String printExp2() {
 		return printExp();
 	}
-	public Expression substitution(List<String> booked, Expression var, Expression sub) {
+	public Expression substitution(List<Long> booked, Expression var, Expression sub) {
 		return new Application(e1.substitution(booked, var, sub), e2.substitution(booked, var, sub));
 	}
 
-	public Expression substitution2(List<String> booked, Expression var, Expression sub) {
+	public Expression substitution2(List<Long> booked, Expression var, Expression sub) {
 		e1 = e1.substitution2(booked, var, sub);
 		e2 = e2.substitution2(booked, var, sub);
+		init();
 		return this;
 	}
 
@@ -86,13 +90,13 @@ public class Application extends LambdaTerm {
 
 	public Expression getNormalForm(Map<Long, Expression> headNormals) { //beta
 //		String printStr = this.printExp();
-//		System.err.println("app norm " + " " + normals.containsKey(printStr));
+		System.err.println("app norm " + " " + headNormals.size());
 		Expression a = e1;
 		Expression b = e2;
 		a = a.getHeadNormalForm(headNormals);
 		if (a instanceof Lambda) {
 			Lambda lam = (Lambda) a;
-			Expression res = lam.e2.createCopy().substitution(new ArrayList<>(), lam.e1, b);
+			Expression res = lam.e2.createCopy().substitution2(new ArrayList<>(), lam.e1, b);
 			while (!res.isNormalForm()) {
 				res = res.getNormalForm(headNormals);
 			}
@@ -110,21 +114,23 @@ public class Application extends LambdaTerm {
 
 	public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
 //		String printStr = this.printExp();
-		System.err.println("app head " + headNormals.size());
+		System.err.println("app head " + headNormals.size() + " " + this.getLen());
 		if (headNormals.containsKey(this.getId())) {
 			return headNormals.get(this.getId());
 		}
 //		if (printStr.length() < 100) System.err.println("!!!app head "  + printStr);
 		Expression a = e1;
+		Long aId = a.getId();
+		Long stId = this.getId();
 		Expression b = e2;
 //		String strA = a.printExp();
 		a = a.getHeadNormalForm(headNormals);
 		Expression res;
 		if (a instanceof Lambda) {
-//			System.err.println(" a -- lambda");
-			headNormals.put(e1.getId(), a);
+			System.err.println(" a -- lambda");
+			headNormals.put(aId, a);
 			Lambda lam = (Lambda) a;
-			res = lam.e2.createCopy().substitution(new ArrayList<>(), lam.e1, b);
+			res = lam.e2.createCopy().substitution2(new ArrayList<>(), lam.e1, b);
 			res = res.getHeadNormalForm(headNormals);
 			headNormals.put(new Application(a, b).getId(), res);
 		} else {
@@ -132,7 +138,7 @@ public class Application extends LambdaTerm {
 			res = new Application(a, b);
 		}
 		if (!(res instanceof Lambda)) res = res.getNormalForm(headNormals);
-		headNormals.put(this.getId(), res);
+		headNormals.put(stId, res);
 		return res;
 	}
 
@@ -149,3 +155,5 @@ public class Application extends LambdaTerm {
 		return len;
 	}
 }
+
+//((\f.\x.f (f x)) (\f.\x.f (f x)) (\f.\x.f (f x))) (\f.\x.f (f x))

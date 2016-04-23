@@ -23,10 +23,10 @@ public class SetEquations {
                     continue;
                 } else {
                     for (int i = 0; i < current.size(); i++) {
-                        current.set(i, current.get(i).substitution(new ArrayList<String>(), cur.getLeft(), cur.getRight()));
+                        current.set(i, current.get(i).substitution(new ArrayList<Long>(), cur.getLeft(), cur.getRight()));
                     }
                     for (int i = 0; i < res.size(); i++) {
-                        res.set(i, res.get(i).substitution(new ArrayList<String>(), cur.getLeft(), cur.getRight()));
+                        res.set(i, res.get(i).substitution(new ArrayList<Long>(), cur.getLeft(), cur.getRight()));
                     }
                     res.add(cur);
                 }
@@ -49,7 +49,7 @@ public class SetEquations {
                 }
                 res.add(cur);
                 for (int i = 0; i < current.size(); i++) {
-                    current.set(i, current.get(i).substitution(new ArrayList<String>(), a, b));
+                    current.set(i, current.get(i).substitution(new ArrayList<Long>(), a, b));
                 }
             }
         }

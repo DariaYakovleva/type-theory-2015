@@ -38,11 +38,11 @@ public class Variable extends LambdaTerm {
     	return res;
     }
 	
-	public Expression substitution(List<String> booked, Expression var, Expression sub) {
+	public Expression substitution(List<Long> booked, Expression var, Expression sub) {
 		if (id != var.getId()) return new Variable(c);
     	boolean have = false;
-    	for (String v: booked) {
-    		if (v.hashCode() == var.getId()) {
+    	for (Long v: booked) {
+    		if (v == var.getId()) {
     			have = true;
     			break;
     		}
@@ -50,20 +50,20 @@ public class Variable extends LambdaTerm {
     	if (have) {
     		return new Variable(c);
     	}
-    	return sub;
+    	return sub.createCopy();
     }
 
-	public Expression substitution2(List<String> booked, Expression var, Expression sub) {
-		if (c.compareTo(var.printExp()) != 0) return new Variable(c);
+	public Expression substitution2(List<Long> booked, Expression var, Expression sub) {
+		if (id != var.getId()) return this;
 		boolean have = false;
-		for (String v: booked) {
-			if (v.compareTo(var.printExp()) == 0) {
+		for (Long v: booked) {
+			if (v == var.getId()) {
 				have = true;
 				break;
 			}
 		}
 		if (have) {
-			return new Variable(c);
+			return this;
 		}
 		return sub;
 	}

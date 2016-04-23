@@ -42,7 +42,7 @@ public class Function implements Expression {
         return res;
     }
 
-    public Expression substitution(List<String> booked, Expression var, Expression sub) {
+    public Expression substitution(List<Long> booked, Expression var, Expression sub) {
         ArrayList<Expression> nvars = new ArrayList();
         for (Expression x: vars) {
             nvars.add(x.substitution(booked, var, sub));
@@ -50,7 +50,7 @@ public class Function implements Expression {
         return new Function(name, nvars);
     }
 
-    public Expression substitution2(List<String> booked, Expression var, Expression sub) {
+    public Expression substitution2(List<Long> booked, Expression var, Expression sub) {
         ArrayList<Expression> nvars = new ArrayList();
         for (Expression x: vars) {
             nvars.add(x.substitution2(booked, var, sub));
