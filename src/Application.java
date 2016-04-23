@@ -90,7 +90,7 @@ public class Application extends LambdaTerm {
 
 	public Expression getNormalForm(Map<Long, Expression> headNormals) { //beta
 //		String printStr = this.printExp();
-		System.err.println("app norm " + " " + headNormals.size());
+//		System.err.println("app norm " + " " + headNormals.size());
 		Expression a = e1;
 		Expression b = e2;
 		a = a.getHeadNormalForm(headNormals);
@@ -114,7 +114,7 @@ public class Application extends LambdaTerm {
 
 	public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
 //		String printStr = this.printExp();
-		System.err.println("app head " + headNormals.size() + " " + this.getLen());
+//		System.err.println("app head " + headNormals.size() + " " + this.getLen());
 		if (headNormals.containsKey(this.getId())) {
 			return headNormals.get(this.getId());
 		}
@@ -127,7 +127,7 @@ public class Application extends LambdaTerm {
 		a = a.getHeadNormalForm(headNormals);
 		Expression res;
 		if (a instanceof Lambda) {
-			System.err.println(" a -- lambda");
+//			System.err.println(" a -- lambda");
 			headNormals.put(aId, a);
 			Lambda lam = (Lambda) a;
 			res = lam.e2.createCopy().substitution2(new ArrayList<>(), lam.e1, b);

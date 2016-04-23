@@ -89,7 +89,7 @@ public class Lambda extends LambdaTerm {
 	}
 
 	public Expression getNormalForm(Map<Long, Expression> headNormals) {
-		System.err.println("lambda norm");
+//		System.err.println("lambda norm");
 //		String printStr = this.printExp();
 		Expression a = e1;
 		Expression b = e2;
