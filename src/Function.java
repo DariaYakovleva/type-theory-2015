@@ -112,14 +112,21 @@ public class Function implements Expression {
         return new Function(name, new ArrayList(vars));
     }
 
-    public Expression getNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
+    public Expression getNormalForm(Map<Long, Expression> headNormals) {
         return this.createCopy();
     }
-    public Expression getHeadNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
+    public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
         return this.createCopy();
     }
 
     public boolean isNormalForm() {
         return true;
     }
+    public long getId() {
+        return -1;
+    }
+    public long getLen() {
+        return -1;
+    }
 }
+

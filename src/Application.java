@@ -2,13 +2,20 @@
 import java.util.*;
 
 
-public class Application implements Expression {
-
+public class Application extends LambdaTerm {
 	Expression e1;
 	Expression e2;
+	long id;
+	long len;
 	public Application(Expression e1, Expression e2) {
 		this.e1 = e1;
 		this.e2 = e2;
+		len = e1.getLen() + e2.getLen() + 3;
+		id = (id + getHash("(") + e1.getId() * power(1)) % MOD;
+		id = (id + getHash(" ") * power((int)e1.getLen() + 1)) % MOD;
+		id = (id + e2.getId() * power((int)e1.getLen() + 2)) % MOD;
+		id = (id + getHash(")") * power((int)(e1.getLen() + e2.getLen()) + 2)) % MOD;
+//		System.err.println("app id = " + id + " " + printExp());
 	}
 
 	public String printExp() {
@@ -77,79 +84,55 @@ public class Application implements Expression {
 		return new Application(e1.createCopy(), e2.createCopy());
 	}
 
-	public Expression getNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) { //beta
-		String printStr = this.printExp();
+	public Expression getNormalForm(Map<Long, Expression> headNormals) { //beta
+//		String printStr = this.printExp();
 //		System.err.println("app norm " + " " + normals.containsKey(printStr));
-		if (normals.containsKey(printStr)) {
-			return normals.get(printStr).createCopy();
-		}
 		Expression a = e1;
 		Expression b = e2;
-		String strA = a.printExp();
-		String strB = b.printExp();
-		a = a.getHeadNormalForm(normals, headNormals);
+		a = a.getHeadNormalForm(headNormals);
 		if (a instanceof Lambda) {
 			Lambda lam = (Lambda) a;
 			Expression res = lam.e2.createCopy().substitution(new ArrayList<>(), lam.e1, b);
-			String resStr = res.printExp();
-			List<Expression> exps = new ArrayList<>();
 			while (!res.isNormalForm()) {
-				exps.add(res);
-				res = res.getNormalForm(normals, headNormals);
+				res = res.getNormalForm(headNormals);
 			}
-			System.err.println("eres" + exps.size());
-			for (Expression e: exps) normals.put(e.printExp(), res);
-			normals.put(resStr, res);
-			normals.put(printStr, res);
 			return res;
 		}
-		List<Expression> exps = new ArrayList<>();
 		while (!a.isNormalForm()) {
-			exps.add(a);
-			a = a.getNormalForm(normals, headNormals);
+			a = a.getNormalForm(headNormals);
 		}
-		normals.put(strA, a);
-		System.err.println("ea" + exps.size());
-		for (Expression e: exps) normals.put(e.printExp(), a);
-		exps.clear();
 		while (!b.isNormalForm()) {
-			exps.add(b);
-			b = b.getNormalForm(normals, headNormals);
+			b = b.getNormalForm(headNormals);
 		}
-		normals.put(strB, b);
-		System.err.println("eb" + exps.size());
-		for (Expression e: exps) normals.put(e.printExp(), b);
 		Expression res = new Application(a, b);
-		normals.put(printStr, res);
 		return res;
 	}
 
-	public Expression getHeadNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
-		String printStr = this.printExp();
-//		System.err.println("app head");
-		if (headNormals.containsKey(printStr)) {
-			return headNormals.get(printStr).createCopy();
+	public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
+//		String printStr = this.printExp();
+		System.err.println("app head " + headNormals.size());
+		if (headNormals.containsKey(this.getId())) {
+			return headNormals.get(this.getId());
 		}
-		if (printStr.length() < 100) System.err.println("!!!app head "  + printStr);
+//		if (printStr.length() < 100) System.err.println("!!!app head "  + printStr);
 		Expression a = e1;
 		Expression b = e2;
-		String strA = a.printExp();
-		a = a.getHeadNormalForm(normals, headNormals);
+//		String strA = a.printExp();
+		a = a.getHeadNormalForm(headNormals);
 		Expression res;
 		if (a instanceof Lambda) {
 //			System.err.println(" a -- lambda");
-			if (a.printExp().length() < 50) System.err.println(a.printExp());
-			headNormals.put(strA, a);
+			headNormals.put(e1.getId(), a);
 			Lambda lam = (Lambda) a;
 			res = lam.e2.createCopy().substitution(new ArrayList<>(), lam.e1, b);
-			res = res.getHeadNormalForm(normals, headNormals);
-			headNormals.put(new Application(a, b).printExp(), res);
+			res = res.getHeadNormalForm(headNormals);
+			headNormals.put(new Application(a, b).getId(), res);
 		} else {
 			System.err.println("app just app");
 			res = new Application(a, b);
 		}
-		if (!(res instanceof Lambda)) res = res.getNormalForm(normals, headNormals);
-		headNormals.put(printStr, res);
+		if (!(res instanceof Lambda)) res = res.getNormalForm(headNormals);
+		headNormals.put(this.getId(), res);
 		return res;
 	}
 
@@ -158,5 +141,11 @@ public class Application implements Expression {
 			return false;
 		}
 		return e1.isNormalForm() && e2.isNormalForm();
+	}
+	public long getId() {
+		return id;
+	}
+	public long getLen() {
+		return len;
 	}
 }

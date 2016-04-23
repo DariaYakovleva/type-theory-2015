@@ -4,13 +4,16 @@ import java.util.Map;
 import java.util.Random;
 
 
-public class Variable implements Expression {
-
+public class Variable extends LambdaTerm {
 	String c;
-
+	long id;
+	long len;
 	public Variable(String a) {
 		this.c = a;
+		id = getHash(a);
+		len = a.length();
 	}
+
 
 	public Expression createCopy() {
 		return new Variable(c);
@@ -36,10 +39,10 @@ public class Variable implements Expression {
     }
 	
 	public Expression substitution(List<String> booked, Expression var, Expression sub) {
-		if (c.compareTo(var.printExp()) != 0) return new Variable(c);
+		if (id != var.getId()) return new Variable(c);
     	boolean have = false;
     	for (String v: booked) {
-    		if (v.compareTo(var.printExp()) == 0) {
+    		if (v.hashCode() == var.getId()) {
     			have = true;
     			break;
     		}
@@ -47,7 +50,7 @@ public class Variable implements Expression {
     	if (have) {
     		return new Variable(c);
     	}
-    	return sub.createCopy();
+    	return sub;
     }
 
 	public Expression substitution2(List<String> booked, Expression var, Expression sub) {
@@ -85,14 +88,20 @@ public class Variable implements Expression {
 		return this.createCopy();
 	}
 
-	public Expression getNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
-		return this.createCopy();
+	public Expression getNormalForm(Map<Long, Expression> headNormals) {
+		return this;
 	}
-	public Expression getHeadNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
-		return this.createCopy();
+	public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
+		return this;
 	}
 
 	public boolean isNormalForm() {
 		return true;
+	}
+	public long getId() {
+		return id;
+	}
+	public long getLen() {
+		return len;
 	}
 }

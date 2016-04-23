@@ -3,14 +3,21 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Lambda implements Expression {
-  
+public class Lambda extends LambdaTerm {
 	Expression e1;
 	Expression e2;
+	long id;
+	long len;
     public Lambda(Expression e1, Expression e2) {
     	this.e1 = e1;
     	this.e2 = e2;
-    }
+		len = e1.getLen() + e2.getLen() + 4;
+		id = (id + getHash("(\\") + e1.getId() * power(2)) % MOD;
+		id = (id + getHash(".") * power((int)e1.getLen() + 2)) % MOD;
+		id = (id + e2.getId() * power((int)e1.getLen() + 3)) % MOD;
+		id = (id + getHash(")") * power((int)(e1.getLen() + e2.getLen()) + 3)) % MOD;
+//		System.err.println("lam id = " + id + " " + printExp());
+	}
     
     public String printExp() {
 		return "(\\" + e1.printExp() + "." + e2.printExp() + ")";
@@ -77,31 +84,30 @@ public class Lambda implements Expression {
 		return new Lambda(e1.createCopy(), e2.createCopy());
 	}
 
-	public Expression getNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
+	public Expression getNormalForm(Map<Long, Expression> headNormals) {
 //		System.err.println("lambda norm");
-		String printStr = this.printExp();
-		if (normals.containsKey(printStr)) {
-			return normals.get(printStr).createCopy();
-		}
+//		String printStr = this.printExp();
 		Expression a = e1;
-		Expression b = e2.createCopy();
-		List<Expression> exps = new ArrayList<>();
+		Expression b = e2;
 		while (!b.isNormalForm()) {
-			exps.add(b);
-			b = b.getNormalForm(normals, headNormals);
+			b = b.getNormalForm(headNormals);
 		}
 		Expression res = new Lambda(a, b);
-		for (Expression e: exps) normals.put(e.printExp(), b);
-		normals.put(printStr, res);
 		return res;
 	}
 
-	public Expression getHeadNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals) {
+	public Expression getHeadNormalForm(Map<Long, Expression> headNormals) {
 //		System.err.println("lambda head");
 		return this;
 	}
 
 	public boolean isNormalForm() {
 		return e2.isNormalForm();
+	}
+	public long getId() {
+		return id;
+	}
+	public long getLen() {
+		return len;
 	}
 }

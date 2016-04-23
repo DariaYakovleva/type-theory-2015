@@ -11,8 +11,10 @@ public interface Expression {
     public void getSetEquations(Map<Expression, Expression> types, List<Expression> equations, List<Integer> cnt);
     public boolean isEqual(Expression b);
     public Expression replace(Expression a, Expression b);
-    public Expression getNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals);
-    public Expression getHeadNormalForm(Map<String, Expression> normals, Map<String, Expression> headNormals);
+    public Expression getNormalForm(Map<Long, Expression> headNormals);
+    public Expression getHeadNormalForm(Map<Long, Expression> headNormals);
     public boolean isNormalForm();
+    long getId();
+    long getLen();
 }
 

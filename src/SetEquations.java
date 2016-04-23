@@ -19,16 +19,16 @@ public class SetEquations {
             if (((cur).getLeft() instanceof Function) && ((cur).getRight() instanceof Variable)) {
                 current.push(new Equation(cur.getRight(), cur.getLeft()));
             } else if (((cur).getLeft() instanceof Variable) && ((cur).getRight() instanceof Variable)) {
-                if (cur.getLeft().printExp().compareTo(cur.getRight().printExp()) == 0) {
+                if (cur.getLeft().isEqual(cur.getRight())) {
                     continue;
                 } else {
-//                    res.add(cur);
                     for (int i = 0; i < current.size(); i++) {
                         current.set(i, current.get(i).substitution(new ArrayList<String>(), cur.getLeft(), cur.getRight()));
                     }
                     for (int i = 0; i < res.size(); i++) {
                         res.set(i, res.get(i).substitution(new ArrayList<String>(), cur.getLeft(), cur.getRight()));
                     }
+                    res.add(cur);
                 }
             } else if (((cur).getLeft() instanceof Function) && ((cur).getRight() instanceof Function)) {
                 Function a = (Function)cur.getLeft();
